@@ -90,7 +90,6 @@ package main
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/meinside/mecab-ko-go"
 )
@@ -120,14 +119,13 @@ func main() {
 
 	node := tg.ParseToNode(lt)
 	for {
-		features := strings.Split(node.Feature(), ",")
+		feature := node.Feature()
+		tag, _ := mecab.NewTag(feature)
 
-		// XXX - 품사 태그 설명:
-		// https://docs.google.com/spreadsheets/d/1-9blXKjtjeKZqsf4NzHeYJCrr49-nXeRF6D80udfcwY/edit#gid=589544265
-		if features[0] == "NNG" {
-			fmt.Printf("[명사] %s (%s)\n", node.Surface(), node.Feature())
+		if tag.Tag == "NNG" {
+			fmt.Printf("[명사] %s (%s)\n", node.Surface(), feature)
 		} else {
-			fmt.Printf("[기타] %s (%s)\n", node.Surface(), node.Feature())
+			fmt.Printf("[기타/%s] %s (%s)\n", tag.Description, node.Surface(), feature)
 		}
 
 		if node.Next() != nil {
@@ -140,23 +138,23 @@ func main() {
 It will output:
 
 ```
-[기타]  (BOS/EOS,*,*,*,*,*,*,*)
+[기타/문장 시작, 끝]  (BOS/EOS,*,*,*,*,*,*,*)
 [명사] 아버지 (NNG,*,F,아버지,*,*,*,*)
-[기타] , (SC,*,*,*,*,*,*,*)
-[기타] 지금 (MAG,성분부사/시간부사,T,지금,*,*,*,*)
-[기타] 이 (MM,~명사,F,이,*,*,*,*)
-[기타] 몇 (MM,~가산명사,T,몇,*,*,*,*)
-[기타] 시 (NNBC,*,F,시,*,*,*,*)
-[기타] 인지 (VCP+EC,*,F,인지,Inflect,VCP,EC,이/VCP/*+ᆫ지/EC/*)
-[기타] 나 (JX,*,F,나,*,*,*,*)
-[기타] 알 (VV,*,T,알,*,*,*,*)
-[기타] 고 (EC,*,F,고,*,*,*,*)
+[기타/구분자] , (SC,*,*,*,*,*,*,*)
+[기타/일반 부사] 지금 (MAG,성분부사/시간부사,T,지금,*,*,*,*)
+[기타/관형사] 이 (MM,~명사,F,이,*,*,*,*)
+[기타/관형사] 몇 (MM,~가산명사,T,몇,*,*,*,*)
+[기타/단위를 나타내는 명사] 시 (NNBC,*,F,시,*,*,*,*)
+[기타/알 수 없음] 인지 (VCP+EC,*,F,인지,Inflect,VCP,EC,이/VCP/*+ᆫ지/EC/*)
+[기타/보조사] 나 (JX,*,F,나,*,*,*,*)
+[기타/동사] 알 (VV,*,T,알,*,*,*,*)
+[기타/연결 어미] 고 (EC,*,F,고,*,*,*,*)
 [명사] 가방 (NNG,*,T,가방,*,*,*,*)
-[기타] 에 (JKB,*,F,에,*,*,*,*)
-[기타] 들어가 (VV,*,F,들어가,*,*,*,*)
-[기타] 십니까 (EP+EF,*,F,십니까,Inflect,EP,EF,시/EP/*+ᄇ니까/EF/*)
-[기타] ? (SF,*,*,*,*,*,*,*)
-[기타]  (BOS/EOS,*,*,*,*,*,*,*)
+[기타/부사격 조사] 에 (JKB,*,F,에,*,*,*,*)
+[기타/동사] 들어가 (VV,*,F,들어가,*,*,*,*)
+[기타/알 수 없음] 십니까 (EP+EF,*,F,십니까,Inflect,EP,EF,시/EP/*+ᄇ니까/EF/*)
+[기타/마침표, 물음표, 느낌표] ? (SF,*,*,*,*,*,*,*)
+[기타/문장 시작, 끝]  (BOS/EOS,*,*,*,*,*,*,*)
 ```
 
 ## Original Author
