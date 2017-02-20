@@ -23,6 +23,7 @@ $ cd mecab-ko
 $ ./configure
 $ make
 $ make check
+$ umask 0022
 $ sudo make install
 ```
 
@@ -47,6 +48,21 @@ $ cd mecab-ko-dic-2.0.1-20150920
 $ ./configure
 $ make
 $ sudo make install
+```
+
+If it fails with ``automake``, run ``autogen.sh`` before ``configure`` like this:
+
+```bash
+$ ./autogen.sh
+$ ./configure
+$ make
+$ sudo make install
+```
+
+(Only on Linux) if it still fails with ``libmecab.so.2``, do the following and try again:
+
+```bash
+$ sudo ldconfig
 ```
 
 ## Build/Install
